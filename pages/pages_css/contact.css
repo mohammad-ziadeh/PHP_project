@@ -3,6 +3,8 @@
   justify-content: center;
   align-items: center;
   font-family: Arial, sans-serif;
+  background-image: url(../pics/5ffc1b06663eb74d35c21cc1d8b76965.jpg);
+
 }
 .container1 {
   display: flex;
@@ -32,6 +34,7 @@
 .header1 {
   text-align: center;
   font-size: 50px;
+  color: white;
 }
 .input1,
 .teaxtarea1 {
