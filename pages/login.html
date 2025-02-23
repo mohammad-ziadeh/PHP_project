@@ -115,8 +115,6 @@
 
         .form-wrapper {
             position: relative;
-            margin-bottom: 70px;
-            /* Increased space between input fields */
         }
 
         .form-wrapper i {
@@ -134,13 +132,42 @@
             width: 100%;
             height: 30px;
             padding: 0;
-            margin-bottom: 70px;
-            /* Increased space between input fields */
+            margin-bottom: 25px;
         }
 
-        .form-wrapper:last-child {
-            margin-bottom: 70px;
-            /* Increased space before the button */
+        .form-control::-webkit-input-placeholder {
+            font-size: 13px;
+            color: #333;
+            font-family: "Poppins-Regular";
+        }
+
+        .form-control::-moz-placeholder {
+            font-size: 13px;
+            color: #333;
+            font-family: "Poppins-Regular";
+        }
+
+        .form-control:-ms-input-placeholder {
+            font-size: 13px;
+            color: #333;
+            font-family: "Poppins-Regular";
+        }
+
+        .form-control:-moz-placeholder {
+            font-size: 13px;
+            color: #333;
+            font-family: "Poppins-Regular";
+        }
+
+        select {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+            padding-left: 20px;
+        }
+
+        select option[value=""][disabled] {
+            display: none;
         }
 
         button {
@@ -148,17 +175,103 @@
             width: 164px;
             height: 51px;
             margin: auto;
-            margin-top: 150px;
-            /* Increased space above the button */
+            margin-top: 40px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 0;
-            background: #2d43b1;
+            background: #333;
             font-size: 15px;
             color: #fff;
+            vertical-align: middle;
+            -webkit-transform: perspective(1px) translateZ(0);
+            transform: perspective(1px) translateZ(0);
+            -webkit-transition-duration: 0.3s;
             transition-duration: 0.3s;
+        }
+
+        button i {
+            margin-left: 10px;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+
+        button:hover i,
+        button:focus i,
+        button:active i {
+            -webkit-animation-name: hvr-icon-wobble-horizontal;
+            animation-name: hvr-icon-wobble-horizontal;
+            -webkit-animation-duration: 1s;
+            animation-duration: 1s;
+            -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out;
+            -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+        }
+
+        @-webkit-keyframes hvr-icon-wobble-horizontal {
+            16.65% {
+                -webkit-transform: translateX(6px);
+                transform: translateX(6px);
+            }
+
+            33.3% {
+                -webkit-transform: translateX(-5px);
+                transform: translateX(-5px);
+            }
+
+            49.95% {
+                -webkit-transform: translateX(4px);
+                transform: translateX(4px);
+            }
+
+            66.6% {
+                -webkit-transform: translateX(-2px);
+                transform: translateX(-2px);
+            }
+
+            83.25% {
+                -webkit-transform: translateX(1px);
+                transform: translateX(1px);
+            }
+
+            100% {
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes hvr-icon-wobble-horizontal {
+            16.65% {
+                -webkit-transform: translateX(6px);
+                transform: translateX(6px);
+            }
+
+            33.3% {
+                -webkit-transform: translateX(-5px);
+                transform: translateX(-5px);
+            }
+
+            49.95% {
+                -webkit-transform: translateX(4px);
+                transform: translateX(4px);
+            }
+
+            66.6% {
+                -webkit-transform: translateX(-2px);
+                transform: translateX(-2px);
+            }
+
+            83.25% {
+                -webkit-transform: translateX(1px);
+                transform: translateX(1px);
+            }
+
+            100% {
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+            }
         }
 
         @media (max-width: 1199px) {
@@ -196,14 +309,13 @@
     </style>
 </head>
 <body>
-    <div class="wrapper" style="background-image: url('jki.png');">
-        <div class="inner">
+    <div class="wrapper" style="background-image: url('./pics/pexels-olly-3755706.jpg'); background-size:cover;">
+        <div class="inner" style="height: 500px;">
             <div class="image-holder">
-                <img src="qwe.png" alt="">
+                <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 460px;">
             </div>
             <form action="#">
-                <h3>Log-in</h3>
-
+                <h3>Sign in Form</h3>
                 <div class="form-wrapper">
                     <input type="text" id="email" placeholder="Email Address" class="form-control">
                     <i class="zmdi zmdi-email"></i>
@@ -214,8 +326,7 @@
                     <i class="zmdi zmdi-lock"></i>
                     <span id="passwordError" style="display: none; color: red;">Invalid Password</span>
                 </div>
-
-                <button type="button" id="logButton">Log-in <i class="zmdi zmdi-arrow-right"></i></button>
+                <button type="button" id="registerButton">Register <i class="zmdi zmdi-arrow-right"></i></button>
             </form>
         </div>
     </div>
