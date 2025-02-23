@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Registration Form</title>
@@ -159,13 +161,6 @@
             font-family: "Poppins-Regular";
         }
 
-        select {
-            -moz-appearance: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-            padding-left: 20px;
-        }
-
         select option[value=""][disabled] {
             display: none;
         }
@@ -308,33 +303,48 @@
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper" style="background-image: url('./pics/pexels-olly-3755706.jpg'); background-size:cover;">
-        <div class="inner" style="height: 500px;">
+        <div class="inner" style="height: 500px; width: 65%;">
             <div class="image-holder">
                 <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 460px;">
             </div>
-            <form action="#">
+            <form action="./php/login.php" method="POST">
                 <h3>Sign in Form</h3>
                 <div class="form-wrapper">
-                    <input type="text" id="email" placeholder="Email Address" class="form-control">
+                    <input style=" padding: 10px; margin: 10px;" type="email" id="email" placeholder="Email Address"
+                        class="form-control">
                     <i class="zmdi zmdi-email"></i>
-                    <span id="emailError" style="display: none; color: red;">Invalid Email</span>
+                    <span id="emailError" style="display: none; color: red;  padding: 10px; margin: 10px;"><?php
+                                                                                                            if (empty($email)) {
+                                                                                                                echo "Invalid Email Address";
+                                                                                                            }
+                                                                                                            ?>
+                    </span>
                 </div>
                 <div class="form-wrapper">
-                    <input type="password" id="password" placeholder="Password" class="form-control">
+                    <input style=" padding: 10px; margin: 10px;" type="password" id="password" placeholder="Password"
+                        class="form-control">
                     <i class="zmdi zmdi-lock"></i>
-                    <span id="passwordError" style="display: none; color: red;">Invalid Password</span>
+                    <span id="passwordError" style="display: none; color: red;  padding: 10px; margin: 10px;"><?php
+                                                                                                            if (empty($password)) {
+                                                                                                                echo "Invalid Password";
+                                                                                                            }
+                                                                                                            ?></span>
                 </div>
-                <button type="button" id="registerButton">Register <i class="zmdi zmdi-arrow-right"></i></button>
+                <button type="button" style="width: 100%;" id="registerButton">Register <i
+                        class="zmdi zmdi-arrow-right"></i></button>
+                <br>
+                <p>Don't <a href="./sign_up.php">have an account</a>?</p>
             </form>
         </div>
     </div>
     <script>
-
         const email = document.getElementById("email");
         const password = document.getElementById("password");
-        const logButton = document.getElementById("logButton");
+        const registerButton = document.getElementById("registerButton");
+
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
@@ -359,21 +369,18 @@
                 hideError("passwordError");
             }
 
-
         }
 
         function validateSignup() {
-
             if (email.value.trim() === "") {
                 email.classList.add("border", "border-danger", "border-2");
             }
             if (password.value.trim() === "") {
                 password.classList.add("border", "border-danger", "border-2");
             }
-
         }
 
-        logButton.addEventListener("click", () => {
+        registerButton.addEventListener("click", () => {
             rgx();
             validateSignup();
             validatePassword();
@@ -388,4 +395,5 @@
         }
     </script>
 </body>
+
 </html>
