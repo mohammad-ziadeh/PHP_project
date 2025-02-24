@@ -1,25 +1,28 @@
 <?php
 include('./php/login_signUp.php');
-$alreadyEmail = "";
+$noEmail = "";
+$noPassword = "";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
-    $password = $_POST['password'];
+    $password = $_POST['customer_password'];
 
-    $sql = "SELECT * FROM users WHERE email='$email'";
-    $result = $conn->query($sql);
-
-
+    $sql = "SELECT email, customer_password FROM customers WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        if (password_verify($password, $row['password'])) {
-            echo "Login Success";
+        if (password_verify($password, $row['customer_password'])) {
+            header("Location: ../index.html");
+            exit();
         } else {
-            echo "Wrong Password";
+            $noPassword = "Wrong Password" . $stmt->error;
         }
     } else {
-        echo "Email not Found";
+        $noEmail = "Wrong Email" . $stmt->error;
     }
 }
 ?>
@@ -46,28 +49,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <form action="./login.php" method="POST">
                 <h3>Sign in Form</h3>
                 <div class="form-wrapper">
-                    <input style=" padding: 10px; margin: 10px;" type="email" id="email" placeholder="Email Address"
+                    <input style=" padding: 10px; margin: 10px;" type="email" name="email" id="email" placeholder="Email Address"
                         class="form-control">
                     <i class="zmdi zmdi-email"></i>
-                    <span id="emailError" style="display: none; color: red;  padding: 10px; margin: 10px;"><?php
-                                                                                                            if (empty($email)) {
-                                                                                                                echo "Invalid Email Address";
-                                                                                                            }
-                                                                                                            ?>
+                    <span id="emailError" style="color: red; <?php echo !empty($noEmail) ? 'display: block;' : 'display: none;'; ?>">
+                        <?php echo $noEmail; ?>
                     </span>
                 </div>
                 <div class="form-wrapper">
-                    <input style=" padding: 10px; margin: 10px;" type="password" id="password" placeholder="Password"
+                    <input style=" padding: 10px; margin: 10px;" type="password" id="password" name="customer_password" placeholder="Password"
                         class="form-control">
                     <i class="zmdi zmdi-lock"></i>
-                    <span id="passwordError" style="display: none; color: red;  padding: 10px; margin: 10px;"><?php
-                                                                                                                if (empty($password)) {
-                                                                                                                    echo "Invalid Password";
-                                                                                                                }
-                                                                                                                ?></span>
+                    <span id="passwordError" style="color: red; <?php echo !empty($noPassword) ? 'display: block;' : 'display: none;'; ?>">
+                        <?php echo $noPassword; ?>
+                    </span>
                 </div>
-                <button type="button" style="width: 100%;" id="registerButton">Register <i
-                        class="zmdi zmdi-arrow-right"></i></button>
+                <button type="submit" style="width: 100%;" id="loginButton">Login <i class="zmdi zmdi-arrow-right"></i></button>
                 <br>
                 <p>Don't <a href="./sign_up.php">have an account</a>?</p>
             </form>
@@ -76,51 +73,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script>
         const email = document.getElementById("email");
         const password = document.getElementById("password");
-        const registerButton = document.getElementById("registerButton");
+        const loginButton = document.getElementById("loginButton");
 
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
 
-        function rgx() {
-            if (!emailPattern.test(email.value.trim())) {
+        function validateEmail() {
+            const emailValue = email.value.trim();
+
+            if (!emailPattern.test(emailValue)) {
                 email.classList.add("border-danger");
-                showError("emailError");
+                showError("emailError", "Invalid email format.");
+                return false;
             } else {
                 email.classList.remove("border-danger");
                 email.classList.add("border-success");
                 hideError("emailError");
+                return true;
             }
         }
 
         function validatePassword() {
-            if (!passwordPattern.test(password.value.trim())) {
+            const passwordValue = password.value.trim();
+
+            if (!passwordPattern.test(passwordValue)) {
                 password.classList.add("border-danger");
-                showError("passwordError");
+                showError("passwordError", "Password must be at least 6 characters and contain a letter and a number.");
+                return false;
             } else {
                 password.classList.remove("border-danger");
                 password.classList.add("border-success");
                 hideError("passwordError");
-            }
-
-        }
-
-        function validateSignup() {
-            if (email.value.trim() === "") {
-                email.classList.add("border", "border-danger", "border-2");
-            }
-            if (password.value.trim() === "") {
-                password.classList.add("border", "border-danger", "border-2");
+                return true;
             }
         }
 
-        registerButton.addEventListener("click", () => {
-            rgx();
-            validateSignup();
-            validatePassword();
-        });
+        function validateSignup(event) {
+            event.preventDefault();
 
-        function showError(spanId) {
+            let isValid = true;
+
+            if (!validateEmail()) isValid = false;
+            if (!validatePassword()) isValid = false;
+
+            if (isValid) {
+                console.log("Form submitted successfully!");
+                document.querySelector("form").submit();
+            }
+        }
+
+        loginButton.addEventListener("click", validateSignup);
+
+        function showError(spanId, message) {
             document.getElementById(spanId).style.display = "block";
+            document.getElementById(spanId).innerText = message;
         }
 
         function hideError(spanId) {
