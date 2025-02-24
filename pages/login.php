@@ -1,4 +1,31 @@
+<?php
+include('./php/login_signUp.php');
+$noEmail = "";
+$noPassword = "";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['customer_password'];
 
+    $sql = "SELECT email, customer_password FROM customers WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if (password_verify($password, $row['customer_password'])) {
+            header("Location: ../index.html");
+            exit();
+        } else {
+            $noPassword = "Wrong Password" . $stmt->error;
+        }
+    } else {
+        $noEmail = "Wrong Email" . $stmt->error;
+    }
+}
+?>
 <!DOCTYPE html>
 <html>
 
@@ -7,334 +34,37 @@
     <title>Registration Form</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="fonts/material-design-iconic-font/css/material-design-iconic-font.min.css">
-    <style>
-        @font-face {
-            font-family: "Poppins-Regular";
-            src: url("../fonts/poppins/Poppins-Regular.ttf");
-        }
+    <link rel="stylesheet" href="./pages_css/login.css">
 
-        @font-face {
-            font-family: "Poppins-SemiBold";
-            src: url("../fonts/poppins/Poppins-SemiBold.ttf");
-        }
 
-        * {
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: "Poppins-Regular";
-            color: #333;
-            font-size: 13px;
-            margin: 0;
-        }
-
-        input,
-        textarea,
-        select,
-        button {
-            font-family: "Poppins-Regular";
-            color: #333;
-            font-size: 13px;
-        }
-
-        p,
-        h1,
-        h2,
-        h3,
-        h4,
-        h5,
-        h6,
-        ul {
-            margin: 0;
-        }
-
-        img {
-            max-width: 100%;
-        }
-
-        ul {
-            padding-left: 0;
-            margin-bottom: 0;
-        }
-
-        a:hover {
-            text-decoration: none;
-        }
-
-        :focus {
-            outline: none;
-        }
-
-        .wrapper {
-            min-height: 100vh;
-            background-size: cover;
-            background-repeat: no-repeat;
-            display: flex;
-            align-items: center;
-        }
-
-        .inner {
-            padding: 20px;
-            background: #fff;
-            max-width: 850px;
-            margin: auto;
-            display: flex;
-        }
-
-        .inner .image-holder {
-            width: 50%;
-        }
-
-        .inner form {
-            width: 50%;
-            padding-top: 36px;
-            padding-left: 45px;
-            padding-right: 45px;
-        }
-
-        .inner h3 {
-            text-transform: uppercase;
-            font-size: 25px;
-            font-family: "Poppins-SemiBold";
-            text-align: center;
-            margin-bottom: 28px;
-        }
-
-        .form-group {
-            display: flex;
-        }
-
-        .form-group input {
-            width: 50%;
-        }
-
-        .form-group input:first-child {
-            margin-right: 25px;
-        }
-
-        .form-wrapper {
-            position: relative;
-        }
-
-        .form-wrapper i {
-            position: absolute;
-            bottom: 9px;
-            right: 0;
-        }
-
-        .form-control {
-            border: 1px solid #333;
-            border-top: none;
-            border-right: none;
-            border-left: none;
-            display: block;
-            width: 100%;
-            height: 30px;
-            padding: 0;
-            margin-bottom: 25px;
-        }
-
-        .form-control::-webkit-input-placeholder {
-            font-size: 13px;
-            color: #333;
-            font-family: "Poppins-Regular";
-        }
-
-        .form-control::-moz-placeholder {
-            font-size: 13px;
-            color: #333;
-            font-family: "Poppins-Regular";
-        }
-
-        .form-control:-ms-input-placeholder {
-            font-size: 13px;
-            color: #333;
-            font-family: "Poppins-Regular";
-        }
-
-        .form-control:-moz-placeholder {
-            font-size: 13px;
-            color: #333;
-            font-family: "Poppins-Regular";
-        }
-
-        select option[value=""][disabled] {
-            display: none;
-        }
-
-        button {
-            border: none;
-            width: 164px;
-            height: 51px;
-            margin: auto;
-            margin-top: 40px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            background: #333;
-            font-size: 15px;
-            color: #fff;
-            vertical-align: middle;
-            -webkit-transform: perspective(1px) translateZ(0);
-            transform: perspective(1px) translateZ(0);
-            -webkit-transition-duration: 0.3s;
-            transition-duration: 0.3s;
-        }
-
-        button i {
-            margin-left: 10px;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-        }
-
-        button:hover i,
-        button:focus i,
-        button:active i {
-            -webkit-animation-name: hvr-icon-wobble-horizontal;
-            animation-name: hvr-icon-wobble-horizontal;
-            -webkit-animation-duration: 1s;
-            animation-duration: 1s;
-            -webkit-animation-timing-function: ease-in-out;
-            animation-timing-function: ease-in-out;
-            -webkit-animation-iteration-count: 1;
-            animation-iteration-count: 1;
-        }
-
-        @-webkit-keyframes hvr-icon-wobble-horizontal {
-            16.65% {
-                -webkit-transform: translateX(6px);
-                transform: translateX(6px);
-            }
-
-            33.3% {
-                -webkit-transform: translateX(-5px);
-                transform: translateX(-5px);
-            }
-
-            49.95% {
-                -webkit-transform: translateX(4px);
-                transform: translateX(4px);
-            }
-
-            66.6% {
-                -webkit-transform: translateX(-2px);
-                transform: translateX(-2px);
-            }
-
-            83.25% {
-                -webkit-transform: translateX(1px);
-                transform: translateX(1px);
-            }
-
-            100% {
-                -webkit-transform: translateX(0);
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes hvr-icon-wobble-horizontal {
-            16.65% {
-                -webkit-transform: translateX(6px);
-                transform: translateX(6px);
-            }
-
-            33.3% {
-                -webkit-transform: translateX(-5px);
-                transform: translateX(-5px);
-            }
-
-            49.95% {
-                -webkit-transform: translateX(4px);
-                transform: translateX(4px);
-            }
-
-            66.6% {
-                -webkit-transform: translateX(-2px);
-                transform: translateX(-2px);
-            }
-
-            83.25% {
-                -webkit-transform: translateX(1px);
-                transform: translateX(1px);
-            }
-
-            100% {
-                -webkit-transform: translateX(0);
-                transform: translateX(0);
-            }
-        }
-
-        @media (max-width: 1199px) {
-            .wrapper {
-                background-position: right center;
-            }
-        }
-
-        @media (max-width: 991px) {
-            .inner form {
-                padding-top: 10px;
-                padding-left: 30px;
-                padding-right: 30px;
-            }
-        }
-
-        @media (max-width: 767px) {
-            .inner {
-                display: block;
-            }
-
-            .inner .image-holder {
-                width: 100%;
-            }
-
-            .inner form {
-                width: 100%;
-                padding: 40px 0 30px;
-            }
-
-            button {
-                margin-top: 60px;
-            }
-        }
-    </style>
 </head>
 
 <body>
-    <div class="wrapper" style="background-image: url('./pics/pexels-olly-3755706.jpg'); background-size:cover;">
+
+    <div class="wrapper" style="background-image: url('./pics/dark-gray-vertical-wooden-boards.jpg'); background-size:cover;">
         <div class="inner" style="height: 500px; width: 65%;">
             <div class="image-holder">
                 <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 460px;">
             </div>
-            <form action="./php/login.php" method="POST">
+            <form action="./login.php" method="POST">
                 <h3>Sign in Form</h3>
                 <div class="form-wrapper">
-                    <input style=" padding: 10px; margin: 10px;" type="email" id="email" placeholder="Email Address"
+                    <input style=" padding: 10px; margin: 10px;" type="email" name="email" id="email" placeholder="Email Address"
                         class="form-control">
                     <i class="zmdi zmdi-email"></i>
-                    <span id="emailError" style="display: none; color: red;  padding: 10px; margin: 10px;"><?php
-                                                                                                            if (empty($email)) {
-                                                                                                                echo "Invalid Email Address";
-                                                                                                            }
-                                                                                                            ?>
+                    <span id="emailError" style="color: red; <?php echo !empty($noEmail) ? 'display: block;' : 'display: none;'; ?>">
+                        <?php echo $noEmail; ?>
                     </span>
                 </div>
                 <div class="form-wrapper">
-                    <input style=" padding: 10px; margin: 10px;" type="password" id="password" placeholder="Password"
+                    <input style=" padding: 10px; margin: 10px;" type="password" id="password" name="customer_password" placeholder="Password"
                         class="form-control">
                     <i class="zmdi zmdi-lock"></i>
-                    <span id="passwordError" style="display: none; color: red;  padding: 10px; margin: 10px;"><?php
-                                                                                                            if (empty($password)) {
-                                                                                                                echo "Invalid Password";
-                                                                                                            }
-                                                                                                            ?></span>
+                    <span id="passwordError" style="color: red; <?php echo !empty($noPassword) ? 'display: block;' : 'display: none;'; ?>">
+                        <?php echo $noPassword; ?>
+                    </span>
                 </div>
-                <button type="button" style="width: 100%;" id="registerButton">Register <i
-                        class="zmdi zmdi-arrow-right"></i></button>
+                <button type="submit" style="width: 100%;" id="loginButton">Login <i class="zmdi zmdi-arrow-right"></i></button>
                 <br>
                 <p>Don't <a href="./sign_up.php">have an account</a>?</p>
             </form>
@@ -343,51 +73,60 @@
     <script>
         const email = document.getElementById("email");
         const password = document.getElementById("password");
-        const registerButton = document.getElementById("registerButton");
+        const loginButton = document.getElementById("loginButton");
 
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-        const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
 
-        function rgx() {
-            if (!emailPattern.test(email.value.trim())) {
+        function validateEmail() {
+            const emailValue = email.value.trim();
+
+            if (!emailPattern.test(emailValue)) {
                 email.classList.add("border-danger");
-                showError("emailError");
+                showError("emailError", "Invalid email format.");
+                return false;
             } else {
                 email.classList.remove("border-danger");
                 email.classList.add("border-success");
                 hideError("emailError");
+                return true;
             }
         }
 
         function validatePassword() {
-            if (!passwordPattern.test(password.value.trim())) {
+            const passwordValue = password.value.trim();
+
+            if (!passwordPattern.test(passwordValue)) {
                 password.classList.add("border-danger");
-                showError("passwordError");
+                showError("passwordError", "Password must be at least 6 characters and contain a letter and a number.");
+                return false;
             } else {
                 password.classList.remove("border-danger");
                 password.classList.add("border-success");
                 hideError("passwordError");
-            }
-
-        }
-
-        function validateSignup() {
-            if (email.value.trim() === "") {
-                email.classList.add("border", "border-danger", "border-2");
-            }
-            if (password.value.trim() === "") {
-                password.classList.add("border", "border-danger", "border-2");
+                return true;
             }
         }
 
-        registerButton.addEventListener("click", () => {
-            rgx();
-            validateSignup();
-            validatePassword();
-        });
+        function validateSignup(event) {
+            event.preventDefault();
 
-        function showError(spanId) {
+            let isValid = true;
+
+            if (!validateEmail()) isValid = false;
+            if (!validatePassword()) isValid = false;
+
+            if (isValid) {
+                console.log("Form submitted successfully!");
+                document.querySelector("form").submit();
+            }
+        }
+
+        loginButton.addEventListener("click", validateSignup);
+
+        function showError(spanId, message) {
             document.getElementById(spanId).style.display = "block";
+            document.getElementById(spanId).innerText = message;
         }
 
         function hideError(spanId) {
