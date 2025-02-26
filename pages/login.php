@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['customer_password']);
 
-    $sql = "SELECT email, customer_password FROM customers WHERE email = :email";
+    $sql = "SELECT email, customer_password, role FROM customers WHERE email = :email";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
@@ -45,10 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($stmt->rowCount() > 0) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-
         if (password_verify($password, $row['customer_password'])) {
-            header("Location: ../index.php");
-            exit();
+            if ($row['role'] == 'Customer') {
+                header("Location: ../index.php");
+                exit();
+            } else {
+                header("Location: ./Dash/dashboard.php");
+                exit();
+            }
         } else {
             $noPassword = "Wrong Password";
         }
