@@ -1,28 +1,59 @@
 <?php
-include('./php/login_signUp.php');
+// include('./php/config.php');
+// $noEmail = "";
+// $noPassword = "";
+// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//     $email = $_POST['email'];
+//     $password = $_POST['customer_password'];
+
+//     $sql = "SELECT email, customer_password FROM customers WHERE email = ?";
+//     $stmt = $conn->prepare($sql);
+//     $stmt->bindParam(':email', $email , PDO::PARAM_STR);
+//     $stmt->execute();
+
+
+//     if ($stmt->rowCount() > 0) {
+//         $row = $result->fetch_assoc();
+//         if (password_verify($password, $row['customer_password'])) {
+//             header("Location: ../index.php");
+//             exit();
+//         } else {
+//             $noPassword = "Wrong Password" . $stmt->error;
+//         }
+//     } else {
+//         $noEmail = "Wrong Email" . $stmt->error;
+//     }
+// }
+
+
+
+
+include('./php/config.php');
+
 $noEmail = "";
 $noPassword = "";
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['customer_password'];
+    $email = trim($_POST['email']);
+    $password = trim($_POST['customer_password']);
 
-    $sql = "SELECT email, customer_password FROM customers WHERE email = ?";
+    $sql = "SELECT email, customer_password FROM customers WHERE email = :email";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
-    $result = $stmt->get_result();
+
+    if ($stmt->rowCount() > 0) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
         if (password_verify($password, $row['customer_password'])) {
-            header("Location: ../index.html");
+            header("Location: ../index.php");
             exit();
         } else {
-            $noPassword = "Wrong Password" . $stmt->error;
+            $noPassword = "Wrong Password";
         }
     } else {
-        $noEmail = "Wrong Email" . $stmt->error;
+        $noEmail = "Wrong Email";
     }
 }
 ?>
@@ -47,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 460px;">
             </div>
             <form action="./login.php" method="POST">
-                <h3>Sign in Form</h3>
+                <h3 style="color: #c5a15b;">Sign in Form</h3>
                 <div class="form-wrapper">
                     <input style=" padding: 10px; margin: 10px;" type="email" name="email" id="email" placeholder="Email Address"
                         class="form-control">
@@ -64,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php echo $noPassword; ?>
                     </span>
                 </div>
-                <button type="submit" style="width: 100%;" id="loginButton">Login <i class="zmdi zmdi-arrow-right"></i></button>
+                <button type="submit" style="background-color: #1e1e20; width: 100%;" id="loginButton">Login <i class="zmdi zmdi-arrow-right"></i></button>
                 <br>
                 <p>Don't <a href="./sign_up.php">have an account</a>?</p>
             </form>
@@ -98,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (!passwordPattern.test(passwordValue)) {
                 password.classList.add("border-danger");
-                showError("passwordError", "Password must be at least 6 characters and contain a letter and a number.");
+                showError("passwordError", "Wrong password");
                 return false;
             } else {
                 password.classList.remove("border-danger");

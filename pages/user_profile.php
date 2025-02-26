@@ -176,59 +176,55 @@
         </div>
     </nav>
     <!--######################### start here #####################################-->
-    <section class="py-3 py-md-5 py-xl-8">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-md-10 col-lg-8">
-                    <!-- <h3 class="fs-5 mb-2 text-secondary text-uppercase">About</h3> -->
-                    <h2 class="display-5 mb-4">Our journey began with a dream of redefining how the world perceives
-                        design.</h2>
-                    <a href="#" class="btn btn-dark text-uppercase mt-3">Shop Collection</a>
-                </div>
-            </div>
-        </div>
-        <br><br>
-        <div class="container overflow-hidden">
-            <div class="row gy-4 gy-lg-0">
-                <div class="col-12 col-lg-6">
-                    <article>
-                        <div class="card border-0">
-                            <img class="card-img-top img-fluid m-0" style="width: 550px;" loading="lazy"
-                                src="https://www.gazman.com.au/cdn/shop/articles/G24_WeddingDressCodesForMen_Blog_Spring_FeatureTile_800x.jpg?v=1726117506"
-                                alt="Our Vision">
-                            <div class="card-body border bg-white p-4">
-                                <div class="entry-header mb-3">
-                                    <h2 class="card-title entry-title h4 mb-0">
-                                        <a class="link-dark text-decoration-none" href="#!">Our Vision</a>
-                                    </h2>
+    <section class="vh-100" style="background-color: #f4f5f7;">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-lg-6 mb-4 mb-lg-0">
+                    <div class="card mb-3" style="border-radius: .5rem;">
+                        <div class="row g-0">
+                            <div class="col-md-4 gradient-custom text-center text-white"
+                                style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                                    alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+                                <h5>Marie Horwitz</h5>
+                                <p>Web Designer</p>
+                                <i class="far fa-edit mb-5"></i>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body p-4">
+                                    <h6>Information</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>Email</h6>
+                                            <p class="text-muted">info@example.com</p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Phone</h6>
+                                            <p class="text-muted">123 456 789</p>
+                                        </div>
+                                    </div>
+                                    <h6>Projects</h6>
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                        <div class="col-6 mb-3">
+                                            <h6>Recent</h6>
+                                            <p class="text-muted">Lorem ipsum</p>
+                                        </div>
+                                        <div class="col-6 mb-3">
+                                            <h6>Most Viewed</h6>
+                                            <p class="text-muted">Dolor sit amet</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-start">
+                                        <a href="#!"><i class="fab fa-facebook-f fa-lg me-3"></i></a>
+                                        <a href="#!"><i class="fab fa-twitter fa-lg me-3"></i></a>
+                                        <a href="#!"><i class="fab fa-instagram fa-lg"></i></a>
+                                    </div>
                                 </div>
-                                <p class="card-text entry-summary text-secondary mb-3">From sleek modernism to timeless
-                                    elegance, we infuse every creation with a touch of our artistic ingenuity. As a
-                                    design agency, great design can shape perceptions, inspire action, and leave an
-                                    indelible mark on the world.</p>
                             </div>
                         </div>
-                    </article>
-                </div>
-                <div class="col-12 col-lg-6">
-                    <article>
-                        <div class="card border-0">
-                            <img style="width: 650px; height: 383px;" class="card-img-top img-fluid m-0" loading="lazy"
-                                src="https://cdn.shopify.com/s/files/1/0075/3929/4305/files/20210827_GAZMAN_SS21_SHOT_20_107_1024x1024.jpg"
-                                alt="Our Approach">
-                            <div class="card-body border bg-white p-4">
-                                <div class="entry-header mb-3">
-                                    <h2 class="card-title entry-title h4 mb-0">
-                                        <a class="link-dark text-decoration-none" href="#!">Our Approach</a>
-                                    </h2>
-                                </div>
-                                <p class="card-text entry-summary text-secondary mb-3">Welcome to our design agency,
-                                    where creativity knows no bounds and innovation takes center stage. We are a team of
-                                    dedicated designers, strategists, and visionaries with a passion for transforming
-                                    ideas into captivating visuals.</p>
-                            </div>
-                        </div>
-                    </article>
+                    </div>
                 </div>
             </div>
         </div>
@@ -350,7 +346,7 @@
     </footer>
     <script src="js/jquery.min.js"></script>
     <script src="js/plugins.js"></script>
-    <script src="js/SmoothScroll.js"></script>
+    <!-- <script src="js/SmoothScroll.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>

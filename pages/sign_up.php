@@ -1,41 +1,86 @@
 <?php
-include('./php/login_signUp.php');
+include('./php/config.php');
+
+// $alreadyEmail = "";
+
+// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//   $email = trim($_POST['email']);
+//   $password = trim($_POST['customer_password']);
+//   $confirm_password = trim($_POST['confirm_password']);
+
+//   $sql = "SELECT email FROM customers WHERE email = ?";
+//   $stmt = $conn->prepare($sql);
+//   $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+//   $stmt->execute();
+//   $stmt->store_result();
+
+//   if ($stmt->num_rows > 0) {
+//     $alreadyEmail = "Email already exists";
+//   } else {
+//     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+//     $stmt->close();
+//     $sql = "INSERT INTO customers (email, customer_password) VALUES (?, ?)";
+//     $stmt = $conn->prepare($sql);
+//     $stmt->bindParam(':email', ':customer_password', $email, $password, PDO::PARAM_STR);
+
+//     if ($stmt->execute()) {
+//       header("Location: login.php");
+//       exit();
+//     } else {
+//       echo "Error: " . $stmt->error;
+//     }
+//   }
+
+//   // $stmt->close();
+//   // $conn->close();
+// }
+
+
+
+include('./php/config.php');
 
 $alreadyEmail = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $email = trim($_POST['email']);
-  $password = $_POST['customer_password'];
-  $confirm_password = $_POST['confirm_password'];
+  $password = trim($_POST['customer_password']);
+  $confirm_password = trim($_POST['confirm_password']);
 
-  $sql = "SELECT email FROM customers WHERE email = ?";
+
+  $sql = "SELECT email FROM customers WHERE email = :email";
   $stmt = $conn->prepare($sql);
-  $stmt->bind_param("s", $email);
+  $stmt->bindParam(':email', $email, PDO::PARAM_STR);
   $stmt->execute();
-  $stmt->store_result();
 
-  if ($stmt->num_rows > 0) {
+  if ($stmt->rowCount() > 0) {
     $alreadyEmail = "Email already exists";
   } else {
+    if ($password !== $confirm_password) {
+      echo "Passwords do not match!";
+      exit();
+    }
+
+
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    $stmt->close();
-    $sql = "INSERT INTO customers (email, customer_password) VALUES (?, ?)";
+
+    $sql = "INSERT INTO customers (email, customer_password) VALUES (:email, :password)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $email, $hashed_password);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
 
     if ($stmt->execute()) {
       header("Location: login.php");
       exit();
     } else {
-      echo "Error: " . $stmt->error;
+      echo "Error: Unable to register user.";
     }
   }
-
-  // $stmt->close();
-  // $conn->close();
 }
 ?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -54,8 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <div class="image-holder">
         <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 460px;">
       </div>
-      <form action="./sign_up.php" method="POST" event>
-        <h3>Registration Form</h3>
+      <form action="./sign_up.php" method="POST" >
+        <h3 style="color: #c5a15b;">Registration Form</h3>
         <div class="form-group">
           <input type="text" id="firstName" placeholder="First Name" class="form-control">
           <input type="text" id="lastName" placeholder="Last Name" class="form-control">
@@ -77,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <span id="conPasswordError" style="display: none; color: red;">
           </span>
         </div>
-        <button type="submit" style="width: 100%;" id="registerButton">Register <i class="zmdi zmdi-arrow-right"></i></button>
+        <button type="submit" style="background-color: #1e1e20; width: 100%;" id="registerButton">Register <i class="zmdi zmdi-arrow-right"></i></button>
         <br>
         <p>Already <a href="./login.php">have an account</a>?</p>
       </form>
