@@ -77,9 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
 
     <div class="wrapper" style="background-image: url('./pics/dark-gray-vertical-wooden-boards.jpg'); background-size:cover;">
-        <div class="inner" style="height: 500px; width: 65%;">
+        <div class="inner" style="height: 550px; width: 65%;">
             <div class="image-holder">
-                <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 460px;">
+                <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 500px;">
             </div>
             <form action="./login.php" method="POST">
                 <h3 style="color: #c5a15b;">Sign in Form</h3>

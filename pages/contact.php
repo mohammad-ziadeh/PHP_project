@@ -1,3 +1,37 @@
+<?php
+include './php/config.php';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = trim($_POST['email']);
+    $phone = trim($_POST['phone']);
+    $fname = trim($_POST['fname']);
+    $lname = trim($_POST['lname']);
+    $message = $_POST['message'];
+
+
+    $FullName = $fname . " " . $lname;
+
+
+
+
+    $sql = "INSERT INTO comments (message_email, message, message_phone , message_name) VALUES (:email, :message, :phone , :name)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->bindParam(':message', $message, PDO::PARAM_STR);
+    $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+    $stmt->bindParam(':name', $FullName, PDO::PARAM_STR);
+
+    if ($stmt->execute()) {
+        echo "<script>setTimeout(() => { window.location.href = 'contact.php'; }, 5000);</script>";
+    } else {
+        echo "Error: Unable to register user.";
+    }
+}
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +44,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="author" content="TemplatesJungle">
     <meta name="keywords" content="ecommerce,fashion,store">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <meta name="description" content="Bootstrap 5 Fashion Store HTML CSS Template">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
@@ -179,22 +215,24 @@
     <!--######################### start here #####################################-->
     <section class="rama">
         <div class="container1">
-            <div class="image-container">
+            <!-- <div class="image-container">
                 <img class="img1" src="./pics/12.jpg" alt="Suit">
-            </div>
-            <div class="form-container">
-                <h2 class="header1">Contact Us</h2>
+            </div> -->
+            <form class="form-container" action="./contact.php" method="POST">
+                <h2 class="header1" style="color: #c5a15b;">Message Us</h2>
                 <div class="name-fields">
-                    <input class="input1" type="text" placeholder="First Name">
-                    <input class="input1" type="text" placeholder="Last Name">
+                    <input class="input1" style="background-color: #c5a15b;" type="text" placeholder="First Name" name="fname" required>
+                    <input class="input1" style="background-color: #c5a15b;" type="text" placeholder="Last Name" name="lname" required>
                 </div>
                 <div class="name-fields">
-                    <input class="input1" type="email" placeholder="Email">
-                    <input class="input1" type="tel" placeholder="Mobile">
+                    <input class="input1" style="background-color: #c5a15b;" type="email" placeholder="Email" name="email" required>
+                    <input class="input1" style="background-color: #c5a15b;" type="tel" placeholder="Mobile" name="phone" required>
                 </div>
-                <textarea class="teaxtarea1" placeholder="Type Your Message Here..."></textarea>
-                <button class="btn btn-dark text-uppercase mt-3">Send</button>
-            </div>
+                <textarea class="teaxtarea1" style="background-color: #c5a15b;" placeholder="Type Your Message Here..." name="message" required></textarea>
+                <button onsubmit="showAlert();" class="btn btn-dark text-uppercase mt-3" style="color:#c5a15b" type="submit">
+                    send
+                </button>
+            </form>
         </div>
     </section>
     <!--######################### end here #####################################-->
@@ -312,6 +350,19 @@
             </div>
         </div>
     </footer>
+    <script>
+        function showAlert() {
+            Swal.fire({
+                title: "Thanks for your message!",
+                text: "The message has been sent!",
+                background: "#1e1e20",
+                color: "#c5a15b",
+                iconColor: "#c5a15b",
+                confirmButtonColor: "#c5a15b",
+                confirmButtonText: "OK",
+            });
+        }
+    </script>
     <script src="js/jquery.min.js"></script>
     <script src="js/plugins.js"></script>
     <!-- <script src="js/SmoothScroll.js"></script> -->

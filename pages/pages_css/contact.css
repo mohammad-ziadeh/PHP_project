@@ -1,14 +1,14 @@
 .rama {
   display: grid;
+  grid-template-columns: 1fr 1fr;
   justify-content: center;
-  align-items: center;
   font-family: Arial, sans-serif;
   background-image: url(../pics/5ffc1b06663eb74d35c21cc1d8b76965.jpg);
 
 }
 .container1 {
   display: flex;
-  width: 800px;
+  width: 100%;
   padding: 20px;
   border-radius: 20px;
   color: white;
@@ -16,14 +16,14 @@
 }
 .image-container {
   flex: 1;
+  height: 500px;
 }
 .image-container .img1 {
   width: 100%;
   border-radius: 30px;
-  float: left;
+  height:500px;
 }
 .form-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;

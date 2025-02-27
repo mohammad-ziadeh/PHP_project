@@ -1,42 +1,4 @@
 <?php
-include('./php/config.php');
-
-// $alreadyEmail = "";
-
-// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//   $email = trim($_POST['email']);
-//   $password = trim($_POST['customer_password']);
-//   $confirm_password = trim($_POST['confirm_password']);
-
-//   $sql = "SELECT email FROM customers WHERE email = ?";
-//   $stmt = $conn->prepare($sql);
-//   $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-//   $stmt->execute();
-//   $stmt->store_result();
-
-//   if ($stmt->num_rows > 0) {
-//     $alreadyEmail = "Email already exists";
-//   } else {
-//     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-//     $stmt->close();
-//     $sql = "INSERT INTO customers (email, customer_password) VALUES (?, ?)";
-//     $stmt = $conn->prepare($sql);
-//     $stmt->bindParam(':email', ':customer_password', $email, $password, PDO::PARAM_STR);
-
-//     if ($stmt->execute()) {
-//       header("Location: login.php");
-//       exit();
-//     } else {
-//       echo "Error: " . $stmt->error;
-//     }
-//   }
-
-//   // $stmt->close();
-//   // $conn->close();
-// }
-
-
 
 include('./php/config.php');
 
@@ -46,6 +8,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $email = trim($_POST['email']);
   $password = trim($_POST['customer_password']);
   $confirm_password = trim($_POST['confirm_password']);
+  $phone = trim($_POST['phone']);
+  $address = trim($_POST['address']);
+  $fname = trim($_POST['fname']);
+  $lname = trim($_POST['lname']);
+
+  $FullName = $fname . " " . $lname;
+
 
 
   $sql = "SELECT email FROM customers WHERE email = :email";
@@ -65,10 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 
-    $sql = "INSERT INTO customers (email, customer_password) VALUES (:email, :password)";
+    $sql = "INSERT INTO customers (email, customer_password, address,phone ,name) VALUES (:email, :password, :address, :phone , :name)";
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
+    $stmt->bindParam(':address', $address, PDO::PARAM_STR);
+    $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+    $stmt->bindParam(':name', $FullName, PDO::PARAM_STR);
 
     if ($stmt->execute()) {
       header("Location: login.php");
@@ -95,16 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body>
   <div class="wrapper" style="background-image: url('./pics/dark-gray-vertical-wooden-boards.jpg'); background-size:cover;">
-    <div class="inner" style="height: 500px; width: 65%;">
+    <div class="inner" style="height: 550px; width: 65%;">
       <div class="image-holder">
-        <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 460px;">
+        <img src="./pics/pexels-fatih-guney-337108406-16159027.jpg" alt="" style="height: 500px;">
       </div>
-      <form action="./sign_up.php" method="POST" >
+      <form action="./sign_up.php" method="POST">
         <h3 style="color: #c5a15b;">Registration Form</h3>
         <div class="form-group">
-          <input type="text" id="firstName" placeholder="First Name" class="form-control">
-          <input type="text" id="lastName" placeholder="Last Name" class="form-control">
+          <input type="text" id="firstName" placeholder="First Name" class="form-control" name="fname">
+          <input type="text" id="lastName" placeholder="Last Name" class="form-control" name="lname">
         </div>
+
         <div class="form-wrapper">
           <input type="text" id="email" placeholder="Email Address" name="email" class="form-control">
           <i class="zmdi zmdi-email"></i>
@@ -121,6 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <input type="Password" id="conPassword" placeholder="Confirm Password" name="confirm_password" class="form-control">
           <span id="conPasswordError" style="display: none; color: red;">
           </span>
+        </div>
+        <div class="form-group">
+          <input type="text" id="Address" placeholder="Address" class="form-control" name="address">
+          <input type="number" id="PhoneNumber" placeholder="Phone Number" class="form-control" name="phone">
         </div>
         <button type="submit" style="background-color: #1e1e20; width: 100%;" id="registerButton">Register <i class="zmdi zmdi-arrow-right"></i></button>
         <br>
