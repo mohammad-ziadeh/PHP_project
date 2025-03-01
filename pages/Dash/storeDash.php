@@ -1,55 +1,52 @@
 <?php
 include '../php/config.php';
 
-$sql = 'SELECT * FROM product';
-
-$stmt = $conn->prepare($sql);
-$stmt->execute();
-
-$product = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
-?>
-<?php
-
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim($_POST['name']);
     $price = trim($_POST['price']);
     $description = trim($_POST['description']);
     $quantity = trim($_POST['stock_quantity']);
+    $image = trim($_POST['image_url']);
     $cat = trim($_POST['category_id']);
 
-    $sql = 'INSERT INTO product (name, price, description, stock_quantity,category_id) VALUES (:name, :price, :description, :stock_quantity,:category_id)';
+    $sql = 'INSERT INTO product (name, price, description, stock_quantity,image_url, category_id) VALUES (:name, :price, :description, :stock_quantity,:image_url, :category_id)';
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(':name', $name, PDO::PARAM_STR);
     $stmt->bindParam(':price', $price, PDO::PARAM_STR);
     $stmt->bindParam(':description', $description, PDO::PARAM_STR);
     $stmt->bindParam(':stock_quantity', $quantity, PDO::PARAM_INT);
+    $stmt->bindParam(':image_url', $image, PDO::PARAM_INT);
     $stmt->bindParam(':category_id', $cat, PDO::PARAM_INT);
-    $stmt->execute();
+
+    if ($stmt->execute()) {
+        header("Location: storeDash.php?success=true");
+        exit();
+    }
 }
 
+$sql = 'SELECT * FROM product';
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$product = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Boxicons -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <!-- My CSS -->
-    <link rel="stylesheet" href="./dashStyle.css">
+    <link rel="stylesheet" href="dashStyle.css">
 
     <title>AdminHub</title>
 </head>
 
 <body>
-
 
     <!-- SIDEBAR -->
     <section id="sidebar">
@@ -71,31 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </a>
             </li>
             <li>
-                <a href="#">
-                    <i class='bx bxs-doughnut-chart'></i>
-                    <span class="text">Analytics</span>
-                </a>
-            </li>
-            <li>
-                <a href="#">
+                <a href="./messageDash.php">
                     <i class='bx bxs-message-dots'></i>
                     <span class="text">Message</span>
                 </a>
             </li>
-            <li>
-                <a href="#">
-                    <i class='bx bxs-group'></i>
-                    <span class="text">Team</span>
-                </a>
-            </li>
         </ul>
         <ul class="side-menu">
-            <li>
-                <a href="#">
-                    <i class='bx bxs-cog'></i>
-                    <span class="text">Settings</span>
-                </a>
-            </li>
             <li>
                 <a href="#" class="logout">
                     <i class='bx bxs-log-out-circle'></i>
@@ -106,20 +85,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </section>
     <!-- SIDEBAR -->
 
-
-
     <!-- CONTENT -->
     <section id="content">
         <!-- NAVBAR -->
         <nav>
             <i class='bx bx-menu'></i>
-            <a href="#" class="nav-link">Categories</a>
-            <!-- <form action="#">
+            <!-- <a href="#" class="nav-link">Categories</a>
+            <form action="#">
                 <div class="form-input">
                     <input type="search" placeholder="Search...">
                     <button type="submit" class="search-btn"><i class='bx bx-search'></i></button>
                 </div>
-            </form> -->
+            </form>
             <input type="checkbox" id="switch-mode" hidden>
             <label for="switch-mode" class="switch-mode"></label>
             <a href="#" class="notification">
@@ -128,54 +105,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </a>
             <a href="#" class="profile">
                 <img src="img/people.png">
-            </a>
+            </a> -->
         </nav>
         <!-- NAVBAR -->
 
         <!-- MAIN -->
         <main>
-            <!-- <div class="head-title">
-                <div class="left">
-                    <h1>Dashboard</h1>
-                    <ul class="breadcrumb">
-                        <li>
-                            <a href="#">Dashboard</a>
-                        </li>
-                        <li><i class='bx bx-chevron-right'></i></li>
-                        <li>
-                            <a class="active" href="#">Home</a>
-                        </li>
-                    </ul>
-                </div>
-                <a href="#" class="btn-download">
-                    <i class='bx bxs-cloud-download'></i>
-                    <span class="text">Download PDF</span>
-                </a>
-            </div> -->
 
-            <!-- <ul class="box-info">
-                <li>
-                    <i class='bx bxs-calendar-check'></i>
-                    <span class="text">
-                        <h3>1020</h3>
-                        <p>New Order</p>
-                    </span>
-                </li>
-                <li>
-                    <i class='bx bxs-group'></i>
-                    <span class="text">
-                        <h3>2834</h3>
-                        <p>Visitors</p>
-                    </span>
-                </li>
-                <li>
-                    <i class='bx bxs-dollar-circle'></i>
-                    <span class="text">
-                        <h3>$2543</h3>
-                        <p>Total Sales</p>
-                    </span>
-                </li>
-            </ul> -->
             <div class="table-data">
                 <div class="order">
                     <form action="./storeDash.php" method="POST" style="display: flex; gap:20px;">
@@ -206,19 +142,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <input type="text"
                             id="username"
                             style="padding: 8px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 5px; width: 250px; transition: border-color 0.3s ease;"
+                            placeholder="image url"
+                            onfocus="this.style.borderColor = '#4CAF50';"
+                            onblur="this.style.borderColor = '#ddd';" type="text" id="text" name="image_url">
+                        <input type="text"
+                            id="username"
+                            style="padding: 8px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 5px; width: 250px; transition: border-color 0.3s ease;"
                             placeholder="category_id"
                             onfocus="this.style.borderColor = '#4CAF50';"
                             onblur="this.style.borderColor = '#ddd';" type="text" id="text" name="category_id">
-                        <button type="submit">Add</button>
+                        <button class="btn-add" type="submit" style="display: inline-block; padding: 10px 20px; font-size: 16px; border-radius: 5px; border: 2px solid green; background-color: green; color: white; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; width:100px;">Add</button>
                     </form>
+
                 </div>
             </div>
             <div class="table-data">
                 <div class="order">
                     <div class="head">
                         <h3>Products</h3>
-                        <i class='bx bx-search'></i>
-                        <i class='bx bx-filter'></i>
                     </div>
                     <table>
                         <thead>
@@ -235,91 +176,52 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <tbody>
                             <?php foreach ($product as $item) : ?>
                                 <tr>
+                                    <td><?php echo $item['name']; ?></td>
+                                    <td><?php echo $item['price']; ?></td>
+                                    <td><?php echo $item['description']; ?></td>
+                                    <td><?php echo $item['created_at']; ?></td>
+                                    <td><?php echo $item['stock_quantity']; ?></td>
+                                    <td><?php echo $item['image_url']; ?></td>
                                     <td>
-                                        <img src="img/people.png">
-                                        <p>
-                                            <?php
-                                            echo $item['name'];
-                                            ?>
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        echo $item['price']
-                                        ?>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <a href="edit_product.php?id=<?php echo htmlspecialchars($item['product_id']); ?>">
+                                            <button type="button" style="display: inline-block; padding: 10px 20px; font-size: 16px; border-radius: 5px; border: 2px solid blue; background-color: blue; color: white; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; width:100px;" onclick="openEditForm(<?php echo $item['product_id']; ?>)">Update</button>
+                                        </a>
+                                        <button class="delete-btn" type="button" style="display: inline-block; padding: 10px 20px; font-size: 16px; border-radius: 5px; border: 2px solid #dc3545; background-color: #dc3545; color: white; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease; width:100px;" data-id="<?php echo $item['product_id']; ?>">Delete</button>
                                     </td>
 
-                                    <td>
-                                        <?php
-                                        echo $item['description'];
-                                        ?>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </td>
-
-                                    <td>
-                                        <?php
-                                        echo $item['created_at']
-                                        ?>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </td>
-                                    <td>
-                                        <?php
-                                        echo $item['stock_quantity']
-                                        ?>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </td>
-                                    <td>
-                                        image
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </td>
-                                    <td>
-                                        <button>Update</button>
-                                        <button>Delete</button>
-                                    </td>
                                 </tr>
-
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
-                <!-- <div class="todo">
-					<div class="head">
-						<h3>Todos</h3>
-						<i class='bx bx-plus'></i>
-						<i class='bx bx-filter'></i>
-					</div>
-					<ul class="todo-list">
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded'></i>
-						</li>
-					</ul>
-				</div> -->
             </div>
         </main>
         <!-- MAIN -->
     </section>
     <!-- CONTENT -->
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
+    <script>
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = 'delete_product.php?id=' + productId;
+                    }
+                });
+            });
+        });
+    </script>
 
     <script src="dash.js"></script>
 </body>

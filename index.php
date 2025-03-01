@@ -268,7 +268,7 @@
                       <a class="nav-link" href="./pages/contact.php" style="color: #c5a15b;">Contact</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="./pages/user_profile.php" style="color: #c5a15b;">Profile</a>
+                      <a class="nav-link" href="./Products.php" style="color: #c5a15b;">Profile</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" href="./pages/sign_up.php" style="color: #c5a15b;">Login</a>
